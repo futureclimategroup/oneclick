@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OneClick - Future Climate</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2ECC71 0%, #27AE60 100%);
+            color: #333;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Background Pattern */
+        .background-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(255,255,255,0.05) 0%, transparent 50%);
+            z-index: 1;
+        }
+
+        /* Login Container */
+        .login-container {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Left Side - Brand */
+        .brand-side {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            color: white;
+            text-align: center;
+        }
+
+        .brand-logo {
+            margin-bottom: 40px;
+        }
+
+        .brand-logo img {
+            height: 120px;
+            width: auto;
+            object-fit: contain;
+            margin-bottom: 20px;
+            filter: brightness(0) invert(1);
+        }
+
+        .brand-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 16px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .brand-subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 30px;
+            max-width: 400px;
+            line-height: 1.6;
+        }
+
+        .brand-features {
+            display: flex;
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .brand-feature {
+            text-align: center;
+            flex: 1;
+            max-width: 150px;
+        }
+
+        .feature-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+            opacity: 0.9;
+        }
+
+        .feature-text {
+            font-size: 14px;
+            opacity: 0.8;
+            line-height: 1.4;
+        }
+
+        /* Right Side - Access Form */
+        .access-side {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .access-form-container {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .access-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .access-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2ECC71;
+            margin-bottom: 8px;
+        }
+
+        .access-subtitle {
+            font-size: 16px;
+            color: #666;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .form-input:focus {
+            border-color: #2ECC71;
+            box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: #999;
+        }
+
+        .access-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #2ECC71 0%, #27AE60 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 16px;
+        }
+
+        .access-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(46, 204, 113, 0.3);
+        }
+
+        .access-btn:active {
+            transform: translateY(0);
+        }
+
+        .access-footer {
+            text-align: center;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .help-link {
+            color: #2ECC71;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .help-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Tooltip styles */
+        .tooltip-container {
+            position: relative;
+            display: inline-block;
+            margin-left: 8px;
+        }
+
+        .tooltip-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            background: #2ECC71;
+            color: white;
+            border-radius: 50%;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: help;
+            transition: all 0.3s ease;
+        }
+
+        .tooltip-icon:hover {
+            background: #27AE60;
+            transform: scale(1.1);
+        }
+
+        .tooltip-text {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.4;
+            width: 280px;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: #333;
+        }
+
+        .tooltip-container:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .brand-features {
+                gap: 20px;
+            }
+            
+            .brand-feature {
+                max-width: 120px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                overflow: auto;
+            }
+            
+            .login-container {
+                flex-direction: column;
+            }
+            
+            .brand-side {
+                padding: 30px 20px;
+                min-height: 40vh;
+            }
+            
+            .access-side {
+                padding: 30px 20px;
+                min-height: 60vh;
+            }
+            
+            .brand-title {
+                font-size: 28px;
+            }
+            
+            .brand-subtitle {
+                font-size: 16px;
+            }
+            
+            .brand-features {
+                gap: 15px;
+            }
+            
+            .brand-feature {
+                max-width: 100px;
+            }
+            
+            .feature-icon {
+                font-size: 24px;
+            }
+            
+            .feature-text {
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .brand-side {
+                padding: 20px 15px;
+                min-height: 35vh;
+            }
+            
+            .access-side {
+                padding: 20px 15px;
+                min-height: 65vh;
+            }
+            
+            .brand-title {
+                font-size: 24px;
+            }
+            
+            .brand-subtitle {
+                font-size: 14px;
+            }
+            
+            .brand-features {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .brand-feature {
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Pattern -->
+    <div class="background-pattern"></div>
+
+    <!-- Access Container -->
+    <div class="login-container">
+        <!-- Left Side - Brand -->
+        <div class="brand-side">
+            <div class="brand-logo">
+                <img src="Future-Climate.jpg-logo-png.webp" alt="Future Climate">
+            </div>
+            
+            <h1 class="brand-title">OneClick</h1>
+            <p class="brand-subtitle">
+                Sua plataforma de inventários e compensação de créditos segura, fácil e prática!
+            </p>
+            
+            <div class="brand-features">
+                <div class="brand-feature">
+                    <div class="feature-icon">🌱</div>
+                    <div class="feature-text">Inventário de Emissões</div>
+                </div>
+                <div class="brand-feature">
+                    <div class="feature-icon">💳</div>
+                    <div class="feature-text">Compensação de Créditos</div>
+                </div>
+                <div class="brand-feature">
+                    <div class="feature-icon">📊</div>
+                    <div class="feature-text">Relatórios Completos</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side - Access Form -->
+        <div class="access-side">
+            <div class="access-form-container">
+                <div class="access-header">
+                    <h2 class="access-title">Acessar OneClick</h2>
+                    <p class="access-subtitle">Digite sua chave de acesso para continuar</p>
+                </div>
+
+                <form id="accessForm" onsubmit="handleAccess(event)">
+                    <div class="form-group">
+                        <label for="accessKey" class="form-label">
+                            Chave de Acesso
+                            <div class="tooltip-container">
+                                <span class="tooltip-icon">?</span>
+                                <span class="tooltip-text">
+                                    A sua CHAVE é um identificador único que irá servir como ponto de acesso no futuro para seus dados, pode ser seu melhor email, número de telefone ou até seu CPF!
+                                </span>
+                            </div>
+                        </label>
+                        <input 
+                            type="text" 
+                            id="accessKey" 
+                            name="accessKey" 
+                            class="form-input" 
+                            placeholder="Digite sua chave de acesso"
+                            required
+                        >
+                    </div>
+
+                    <button type="submit" class="access-btn">
+                        COMEÇAR
+                    </button>
+                </form>
+
+                <div class="access-footer">
+                    <a href="#" class="help-link">Precisa de ajuda?</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Handle access form submission
+        async function handleAccess(event) {
+            event.preventDefault();
+            
+            const accessKey = document.getElementById('accessKey').value.trim();
+            
+            // Basic validation
+            if (!accessKey) {
+                alert('Por favor, digite sua chave de acesso.');
+                return;
+            }
+            
+            // Validate key format
+            if (!isValidKeyFormat(accessKey)) {
+                alert('Digite uma chave aceita e válida!');
+                return;
+            }
+            
+            // Update button state
+            const accessBtn = document.querySelector('.access-btn');
+            const originalText = accessBtn.textContent;
+            
+            accessBtn.textContent = 'COMEÇANDO...';
+            accessBtn.disabled = true;
+            
+            try {
+                // Validate access key
+                const isValid = await validateAccessKey(accessKey);
+                
+                if (isValid) {
+                    alert('Acesso autorizado! Redirecionando...');
+                    window.location.href = `index.html?key=${encodeURIComponent(accessKey)}`;
+                } else {
+                    alert('CHAVE DE ACESSO INVÁLIDA!');
+                    accessBtn.textContent = originalText;
+                    accessBtn.disabled = false;
+                }
+            } catch (error) {
+                console.error('Erro na validação:', error);
+                alert('Erro ao conectar com o servidor. Tente novamente.');
+                accessBtn.textContent = originalText;
+                accessBtn.disabled = false;
+            }
+        }
+
+        // Function to validate key format (email, phone, CNPJ, CPF)
+        function isValidKeyFormat(key) {
+            // Remove spaces and special characters for validation
+            const cleanKey = key.replace(/[\s\-\.\(\)]/g, '');
+            
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (emailRegex.test(key)) {
+                return true;
+            }
+            
+            // Phone validation (Brazilian format with DDD)
+            const phoneRegex = /^\(?[1-9]{2}\)?\s?9[0-9]{4}[\s\-]?[0-9]{4}$/;
+            if (phoneRegex.test(key)) {
+                return true;
+            }
+            
+            // CNPJ validation (14 digits)
+            const cnpjRegex = /^[0-9]{2}\.?[0-9]{3}\.?[0-9]{3}\/?[0-9]{4}\-?[0-9]{2}$/;
+            if (cnpjRegex.test(key)) {
+                return true;
+            }
+            
+            // CPF validation (11 digits)
+            const cpfRegex = /^[0-9]{3}\.?[0-9]{3}\.?[0-9]{3}\-?[0-9]{2}$/;
+            if (cpfRegex.test(key)) {
+                return true;
+            }
+            
+            return false;
+        }
+
+        // Function to validate access key
+        async function validateAccessKey(accessKey) {
+            try {
+                // Simulate API call - replace with actual validation logic
+                await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate network delay
+                
+                // For demo purposes, accept any key that matches the format
+                // In production, you would validate against your database
+                return true;
+                
+                // Uncomment below for actual API call:
+                /*
+                const response = await fetch(`http://localhost:3000/api/validate-key`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ accessKey: accessKey })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                return data.valid;
+                */
+            } catch (error) {
+                console.error('Erro ao validar chave:', error);
+                throw error;
+            }
+        }
+
+        // Add enter key support for form submission
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const form = document.getElementById('accessForm');
+                if (form) {
+                    form.dispatchEvent(new Event('submit'));
+                }
+            }
+        });
+
+        // Focus on access key input when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('accessKey').focus();
+        });
+    </script>
+</body>
+</html>

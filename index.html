@@ -1,0 +1,3079 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OneClickBot - Créditos de Carbono</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #2ECC71 0%, #27AE60 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        .chat-container {
+            background: white;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #2ECC71 0%, #27AE60 100%);
+            color: white;
+            padding: 20px;
+            position: relative;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1" fill="rgba(255,255,255,0.1)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo {
+            height: 80px;
+            width: auto;
+            max-width: 250px;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .bot-avatar {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .bot-avatar i {
+            font-size: 24px;
+            color: white;
+        }
+
+        .header-text {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .chat-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .chat-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f8f9fa;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+            width: 100%;
+        }
+
+        .message.bot {
+            justify-content: flex-start;
+            width: 100%;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message-content {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .message.bot .message-content {
+            max-width: 100%;
+            width: 100%;
+        }
+
+        .message.bot .message-content {
+            background: white;
+            color: #333;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .message.user .message-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .welcome-message {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #E8F5E8 0%, #F0F8F0 100%);
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border: 2px solid #2ECC71;
+        }
+
+        .welcome-message h3 {
+            color: #27AE60;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .welcome-message p {
+            color: #555;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .carbon-icon {
+            font-size: 24px;
+            color: #2ECC71;
+            margin-bottom: 10px;
+        }
+
+        .chat-input-container {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e9ecef;
+            flex-shrink: 0;
+        }
+
+        .chat-input-wrapper {
+            display: flex;
+            align-items: center;
+            background: #f8f9fa;
+            border-radius: 25px;
+            padding: 8px 15px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input-wrapper:focus-within {
+            border-color: #2ECC71;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.1);
+        }
+
+        .chat-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 14px;
+            padding: 8px 0;
+            color: #333;
+        }
+
+        .chat-input::placeholder {
+            color: #999;
+        }
+
+        .send-button {
+            background: linear-gradient(135deg, #2ECC71 0%, #27AE60 100%);
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-left: 10px;
+        }
+
+        .send-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+        }
+
+        .send-button:active {
+            transform: scale(0.95);
+        }
+
+        .typing-indicator {
+            display: none;
+            padding: 12px 16px;
+            background: white;
+            border-radius: 18px;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+        }
+
+        .typing-dots {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #999;
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes typing {
+            0%, 80%, 100% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .quick-action-btn {
+            background: linear-gradient(135deg, #E8F5E8 0%, #F0F8F0 100%);
+            border: 2px solid #2ECC71;
+            color: #27AE60;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .quick-action-btn:hover {
+            background: #2ECC71;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+        }
+
+        .inventory-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+
+        .inventory-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 100px;
+        }
+
+        .inventory-btn.yes {
+            background: linear-gradient(135deg, #2ECC71 0%, #27AE60 100%);
+            color: white;
+        }
+
+        .inventory-btn.yes:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4);
+        }
+
+        .inventory-btn.no {
+            background: #f8f9fa;
+            color: #666;
+            border: 2px solid #e9ecef;
+        }
+
+        .inventory-btn.no:hover {
+            background: #e9ecef;
+            color: #333;
+        }
+
+        .question-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 2px solid #E8F5E8;
+            width: 100%;
+            max-width: none;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        .question-title {
+            color: #27AE60;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .question-title i {
+            font-size: 18px;
+        }
+
+        .question-text {
+            color: #333;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .question-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .question-option {
+            padding: 12px 15px;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .question-option:hover {
+            background: #E8F5E8;
+            border-color: #2ECC71;
+        }
+
+        .question-option.selected {
+            background: #2ECC71;
+            color: white;
+            border-color: #27AE60;
+        }
+
+        .question-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .question-input:focus {
+            outline: none;
+            border-color: #2ECC71;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.1);
+        }
+
+        .question-input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        .question-input[type="number"]::-webkit-outer-spin-button,
+        .question-input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .question-navigation {
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn.primary {
+            background: linear-gradient(135deg, #2ECC71 0%, #27AE60 100%);
+            color: white;
+        }
+
+        .nav-btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+        }
+
+        .nav-btn.secondary {
+            background: #f8f9fa;
+            color: #333;
+            border: 2px solid #e9ecef;
+        }
+
+        .nav-btn.secondary:hover {
+            background: #e9ecef;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .progress-info {
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+            margin-bottom: 15px;
+        }
+
+        .date-duration-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .date-field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .duration-field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .duration-input-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .duration-number {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .duration-number:focus {
+            outline: none;
+            border-color: #2ECC71;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.1);
+        }
+
+        .duration-select {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 14px;
+            background: #f8f9fa;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .duration-select:focus {
+            outline: none;
+            border-color: #2ECC71;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.1);
+        }
+
+        .date-input {
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .date-input:focus {
+            outline: none;
+            border-color: #2ECC71;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.1);
+        }
+
+        .field-label {
+            font-weight: 500;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .facilitator-tag {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+            z-index: 10;
+        }
+
+        .facilitator-tag i {
+            font-size: 14px;
+        }
+
+        .facilitator-tag.energy {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+        }
+        
+        .facilitator-tag.transport {
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+            box-shadow: 0 2px 8px rgba(52, 73, 94, 0.3);
+        }
+        
+        .facilitator-tag.food {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+        }
+        
+        .facilitator-tag.waste {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            box-shadow: 0 2px 8px rgba(243, 156, 18, 0.3);
+        }
+        
+        .facilitator-tag.infrastructure {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+        }
+
+        .transition-message {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 15px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 2px solid #E8F5E8;
+            text-align: center;
+        }
+
+        .transition-text {
+            color: #333;
+            font-size: 16px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .transition-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .transition-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 150px;
+        }
+
+        .transition-btn.save {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+        }
+
+        .transition-btn.save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(243, 156, 18, 0.4);
+        }
+
+        .transition-btn.next {
+            background: linear-gradient(135deg, #2ECC71 0%, #27AE60 100%);
+            color: white;
+        }
+
+        .transition-btn.next:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4);
+        }
+
+        .conditional-field {
+            margin-top: 15px;
+            padding: 15px;
+            background: #F0F8F0;
+            border-radius: 10px;
+            border-left: 4px solid #2ECC71;
+            display: none;
+        }
+
+        .conditional-field.show {
+            display: block;
+        }
+        
+        .multiple-input-group {
+            margin-bottom: 15px;
+        }
+        
+        .multiple-input-group:last-child {
+            margin-bottom: 0;
+        }
+        
+        .input-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        /* Modal de Progresso */
+        .progress-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .progress-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .progress-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2ECC71;
+            margin-bottom: 30px;
+        }
+
+        .progress-message {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .progress-bar-container {
+            background: #E8F5E8;
+            border-radius: 25px;
+            height: 20px;
+            margin-bottom: 30px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            background: linear-gradient(135deg, #2ECC71 0%, #27AE60 100%);
+            height: 100%;
+            border-radius: 25px;
+            width: 0%;
+            transition: width 0.3s ease;
+            position: relative;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .progress-percentage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Estilos para checkboxes do modal final */
+        .final-checkbox {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            padding: 15px;
+            background: #F8F9FA;
+            border-radius: 10px;
+            border: 2px solid #E8F5E8;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .final-checkbox:hover {
+            background: #E8F5E8;
+            border-color: #2ECC71;
+        }
+
+        .final-checkbox input[type="checkbox"] {
+            margin-right: 12px;
+            transform: scale(1.2);
+            accent-color: #2ECC71;
+        }
+
+        .final-checkbox label {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .price-highlight {
+            color: #2ECC71;
+            font-weight: 700;
+        }
+
+        .credits-info {
+            background: linear-gradient(135deg, #2ECC71 0%, #27AE60 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-weight: 600;
+        }
+
+        /* Estilos para botões finais */
+        .final-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .final-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 150px;
+        }
+
+        .final-btn.finish {
+            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+            color: white;
+        }
+
+        .final-btn.finish:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(149, 165, 166, 0.4);
+        }
+
+        .final-btn.submit {
+            background: linear-gradient(135deg, #2ECC71 0%, #27AE60 100%);
+            color: white;
+        }
+
+        .final-btn.submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4);
+        }
+
+        /* Modal de submissão */
+        .submission-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1001;
+        }
+
+        .submission-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .submission-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2ECC71;
+            margin-bottom: 20px;
+        }
+
+        .submission-message {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .contact-form {
+            margin: 25px 0;
+        }
+
+        .contact-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #E8F5E8;
+            border-radius: 10px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .contact-input:focus {
+            outline: none;
+            border-color: #2ECC71;
+        }
+
+        .contact-input::placeholder {
+            color: #95a5a6;
+        }
+
+        .conclude-btn {
+            background: linear-gradient(135deg, #2ECC71 0%, #27AE60 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+
+        .conclude-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4);
+        }
+
+        /* Estilo para o label da chave de acesso */
+        .access-key-label {
+            background: linear-gradient(135deg, #2ECC71 0%, #27AE60 100%);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+        }
+
+        .access-key-label .key-value {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 12px;
+            border-radius: 4px;
+            margin-left: 8px;
+            font-family: 'Courier New', monospace;
+            font-weight: 700;
+        }
+
+        /* Estilos para grid de histórico */
+        .history-grid {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 1px solid #E8F5E8;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #E8F5E8;
+        }
+
+        .history-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2ECC71;
+            margin: 0;
+        }
+
+        .history-count {
+            background: #2ECC71;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .history-table th {
+            background: #F8F9FA;
+            color: #333;
+            font-weight: 600;
+            padding: 12px 8px;
+            text-align: left;
+            border-bottom: 2px solid #E8F5E8;
+            font-size: 14px;
+        }
+
+        .history-table td {
+            padding: 12px 8px;
+            border-bottom: 1px solid #E8F5E8;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .history-table tr:hover {
+            background: #F8F9FA;
+        }
+
+        .history-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .purchase-id {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            color: #2ECC71;
+        }
+
+        .purchase-date {
+            color: #666;
+        }
+
+        .purchase-amount {
+            font-weight: 600;
+            color: #27AE60;
+        }
+
+        .purchase-status {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .status-completed {
+            background: #D4EDDA;
+            color: #155724;
+        }
+
+        .status-processing {
+            background: #FFF3CD;
+            color: #856404;
+        }
+
+        .status-pending {
+            background: #F8D7DA;
+            color: #721C24;
+        }
+
+        /* Estilos para resgate de compra */
+        .redemption-form {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 1px solid #E8F5E8;
+        }
+
+        .redemption-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #E8F5E8;
+            border-radius: 8px;
+            font-size: 16px;
+            margin: 10px 0;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .redemption-input:focus {
+            outline: none;
+            border-color: #2ECC71;
+        }
+
+        .redemption-input::placeholder {
+            color: #95a5a6;
+        }
+
+        .redemption-btn {
+            background: linear-gradient(135deg, #2ECC71 0%, #27AE60 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .redemption-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4);
+        }
+
+        .redemption-btn:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+
+        .carbon-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(46, 204, 113, 0.1);
+            color: #27AE60;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            margin: 5px 0;
+        }
+
+        @media (max-width: 480px) {
+            .chat-container {
+                height: 100vh;
+            }
+            
+            .logo {
+                height: 60px;
+                max-width: 180px;
+            }
+            
+            .chat-header {
+                padding: 15px;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .header-right {
+                gap: 10px;
+            }
+            
+            .chat-title {
+                font-size: 16px;
+            }
+            
+            .chat-subtitle {
+                font-size: 12px;
+            }
+            
+            .bot-avatar {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .bot-avatar i {
+                font-size: 20px;
+            }
+        }
+
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .floating-leaf {
+            position: absolute;
+            color: rgba(46, 204, 113, 0.1);
+            font-size: 20px;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-leaf:nth-child(1) {
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-leaf:nth-child(2) {
+            top: 60%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+
+        .floating-leaf:nth-child(3) {
+            top: 40%;
+            left: 80%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+                opacity: 0.1;
+            }
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+                opacity: 0.3;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="floating-elements">
+            <div class="floating-leaf">🌿</div>
+            <div class="floating-leaf">🍃</div>
+            <div class="floating-leaf">🌱</div>
+        </div>
+        
+        <div class="chat-header">
+            <div class="logo-container">
+                <img src="Future-Climate.jpg-logo-png.webp" alt="Future Climate Logo" class="logo">
+            </div>
+            <div class="header-right">
+                <div class="header-text">
+                    <h1 class="chat-title">OneClick</h1>
+                    <p class="chat-subtitle">Sua plataforma de inventários e compensação de créditos segura, fácil e prática!</p>
+                </div>
+                <div class="bot-avatar">
+                    <i class="fas fa-leaf"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <div class="welcome-message">
+                <div class="carbon-icon">
+                    <i class="fas fa-seedling"></i>
+                </div>
+                <h3>Bem-vindo ao OneClick! 🌱</h3>
+                <p>Estou aqui para ajudá-lo com inventários e compensação de créditos de carbono de forma simples e sustentável. Vamos começar sua jornada rumo a um futuro mais verde!</p>
+            </div>
+
+            <div class="access-key-label" id="accessKeyLabel" style="display: none;">
+                CHAVE DE ACESSO: <span class="key-value" id="keyValue"></span>
+            </div>
+
+
+            <div class="quick-actions">
+                <button class="quick-action-btn" onclick="sendQuickMessage('Como funciona?')">
+                    <i class="fas fa-question-circle"></i> Como Funciona?
+                </button>
+                <button class="quick-action-btn" onclick="startInventory()">
+                    <i class="fas fa-clipboard-list"></i> Faça seu Inventário
+                </button>
+                <button class="quick-action-btn" onclick="sendQuickMessage('Quero compensar créditos')">
+                    <i class="fas fa-shopping-cart"></i> Compense seus Créditos
+                </button>
+                <button class="quick-action-btn" onclick="sendQuickMessage('Resgatar minha compra')">
+                    <i class="fas fa-gift"></i> Resgatar minha Compra
+                </button>
+                <button class="quick-action-btn" onclick="sendQuickMessage('Consultar meu histórico')">
+                    <i class="fas fa-history"></i> Consultar meu Histórico
+                </button>
+                <button class="quick-action-btn" onclick="exitOneClick()">
+                    <i class="fas fa-sign-out-alt"></i> Sair do OneClick
+                </button>
+            </div>
+        </div>
+
+        <div class="typing-indicator" id="typingIndicator">
+            <div class="typing-dots">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            </div>
+        </div>
+
+        <div class="chat-input-container">
+            <div class="chat-input-wrapper">
+                <input type="text" class="chat-input" id="messageInput" placeholder="Digite sua mensagem..." maxlength="500">
+                <button class="send-button" onclick="sendMessage()">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const chatMessages = document.getElementById('chatMessages');
+        const messageInput = document.getElementById('messageInput');
+        const typingIndicator = document.getElementById('typingIndicator');
+
+        // Função para enviar mensagem
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            if (message) {
+                addMessage(message, 'user');
+                messageInput.value = '';
+                showTypingIndicator();
+                
+                // Simular resposta do bot
+                setTimeout(() => {
+                    hideTypingIndicator();
+                    addBotResponse(message);
+                }, 1500);
+            }
+        }
+
+        // Função para enviar mensagem rápida
+        function sendQuickMessage(message) {
+            addMessage(message, 'user');
+            showTypingIndicator();
+            
+            setTimeout(() => {
+                hideTypingIndicator();
+                addBotResponse(message);
+            }, 1500);
+        }
+
+        // Adicionar mensagem do usuário
+        function addMessage(message, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            
+            // Se a mensagem contém HTML, usar innerHTML, senão textContent
+            if (message.includes('<') && message.includes('>')) {
+                contentDiv.innerHTML = message;
+            } else {
+                contentDiv.textContent = message;
+            }
+            
+            messageDiv.appendChild(contentDiv);
+            chatMessages.appendChild(messageDiv);
+            
+            // Scroll para a última mensagem
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Sistema de inventário
+        let currentQuestionIndex = 0;
+        let inventoryData = {};
+        let isInInventoryMode = false;
+
+        const inventoryQuestions = [
+            {
+                id: "event_name",
+                title: "Me fala mais sobre o Evento?",
+                icon: "fas fa-calendar-alt",
+                text: "Qual é o nome do seu evento?",
+                type: "input",
+                placeholder: "Ex: Festival de Música 2024"
+            },
+            {
+                id: "event_type",
+                title: "Qual tipo do evento?",
+                icon: "fas fa-tags",
+                text: "Qual o tipo do seu evento?",
+                type: "options",
+                options: [
+                    "Show",
+                    "Feira",
+                    "Congresso",
+                    "Festival",
+                    "Outros"
+                ]
+            },
+            {
+                id: "event_date_duration",
+                title: "Qual é a data e duração do Evento?",
+                icon: "fas fa-calendar-check",
+                text: "Informe a data e duração do evento",
+                type: "date_duration",
+                dateLabel: "Data do evento:",
+                durationLabel: "Duração:",
+                durationOptions: ["Minutos", "Horas", "Dias", "Semanas", "Meses"]
+            },
+            {
+                id: "event_location",
+                title: "Qual local do Evento?",
+                icon: "fas fa-map-marker-alt",
+                text: "Qual o local do evento?",
+                type: "options",
+                options: [
+                    "Cidade",
+                    "Espaço Aberto/Fechado",
+                    "Centro de Convenções",
+                    "Hotel"
+                ]
+            },
+            {
+                id: "estimated_audience",
+                title: "Qual o público estimado e/ou real (número de participantes)?",
+                icon: "fas fa-users",
+                text: "Quantas pessoas participaram do evento?",
+                type: "input",
+                placeholder: "Ex: 1000"
+            },
+            {
+                id: "event_area",
+                title: "Qual a área total utilizada para o evento (m²)?",
+                icon: "fas fa-expand-arrows-alt",
+                text: "Qual a área total utilizada para o evento?",
+                type: "input",
+                placeholder: "Ex: 5000"
+            },
+            {
+                id: "electricity_used",
+                title: "O evento utilizou energia elétrica da rede?",
+                icon: "fas fa-bolt",
+                text: "O evento utilizou energia elétrica da rede?",
+                type: "options",
+                category: "energy",
+                options: [
+                    "SIM",
+                    "NÃO"
+                ],
+                conditional: {
+                    field: "electricity_consumption",
+                    showWhen: "SIM",
+                    type: "input",
+                    label: "Qual foi o consumo estimado (kWh)?",
+                    placeholder: "Ex: 5000"
+                }
+            },
+            {
+                id: "generators_used",
+                title: "Houve uso de geradores a diesel, gasolina ou gás?",
+                icon: "fas fa-cog",
+                text: "Houve uso de geradores a diesel, gasolina ou gás?",
+                type: "options",
+                category: "energy",
+                options: [
+                    "SIM",
+                    "NÃO"
+                ],
+                conditional: {
+                    field: "fuel_consumption",
+                    showWhen: "SIM",
+                    type: "input",
+                    label: "Qual a quantidade de combustível consumido (litros)?",
+                    placeholder: "Ex: 200"
+                }
+            },
+            {
+                id: "renewable_energy",
+                title: "Foram usadas fontes renováveis?",
+                icon: "fas fa-leaf",
+                text: "Foram usadas fontes renováveis?",
+                type: "options",
+                category: "energy",
+                options: [
+                    "SIM",
+                    "NÃO"
+                ],
+                conditional: {
+                    field: "renewable_sources",
+                    showWhen: "SIM",
+                    type: "checkbox",
+                    label: "Quais fontes?",
+                    options: [
+                        "Energia Solar",
+                        "Compra de Créditos"
+                    ]
+                }
+            },
+            {
+                id: "participant_origin",
+                title: "Qual a origem da maioria dos participantes?",
+                icon: "fas fa-map-marker-alt",
+                text: "Qual a origem da maioria dos participantes?",
+                type: "options",
+                category: "transport",
+                options: [
+                    "LOCAL",
+                    "REGIONAL",
+                    "NACIONAL",
+                    "INTERNACIONAL"
+                ]
+            },
+            {
+                id: "transport",
+                title: "Como os participantes chegaram ao evento?",
+                icon: "fas fa-car",
+                text: "Como os participantes chegaram ao evento?",
+                type: "options",
+                category: "transport",
+                options: [
+                    "ÔNIBUS",
+                    "CARRO",
+                    "AVIÃO",
+                    "METRÔ",
+                    "BICICLETA",
+                    "CAMINHADA"
+                ]
+            },
+            {
+                id: "average_distance",
+                title: "Estima-se a quilometragem média percorrida por participante?",
+                icon: "fas fa-route",
+                text: "Estima-se a quilometragem média percorrida por participante?",
+                type: "options",
+                category: "transport",
+                options: [
+                    "SIM",
+                    "NÃO"
+                ],
+                conditional: {
+                    field: "distance_km",
+                    showWhen: "SIM",
+                    type: "input",
+                    label: "Qual quilometragem?",
+                    placeholder: "Ex: 50"
+                }
+            },
+            {
+                id: "official_transport",
+                title: "Os organizadores contrataram transporte oficial (ex.: ônibus fretados, vans)?",
+                icon: "fas fa-bus",
+                text: "Os organizadores contrataram transporte oficial (ex.: ônibus fretados, vans)?",
+                type: "options",
+                category: "transport",
+                options: [
+                    "SIM",
+                    "NÃO"
+                ],
+                conditional: {
+                    field: "transport_details",
+                    showWhen: "SIM",
+                    type: "multiple_inputs",
+                    label: "Quantos veículos e distâncias percorridas?",
+                    inputs: [
+                        {
+                            field: "vehicles_count",
+                            label: "Quantidade de veículos:",
+                            placeholder: "Ex: 5",
+                            type: "number"
+                        },
+                        {
+                            field: "total_distance",
+                            label: "Distância percorrida total (km):",
+                            placeholder: "Ex: 200",
+                            type: "number"
+                        }
+                    ]
+                }
+            },
+            {
+                id: "staff_transport",
+                title: "Quantos colaboradores e artistas/fornecedores se deslocaram? Qual o meio de transporte usado?",
+                icon: "fas fa-users",
+                text: "Quantos colaboradores e artistas/fornecedores se deslocaram? Qual o meio de transporte usado?",
+                type: "multiple_inputs",
+                category: "transport",
+                inputs: [
+                    {
+                        field: "staff_count",
+                        label: "Quantidade de colaboradores e artistas/fornecedores:",
+                        placeholder: "Ex: 25",
+                        type: "number"
+                    },
+                    {
+                        field: "staff_transport_method",
+                        label: "Meio de transporte usado:",
+                        placeholder: "Ex: Carro próprio, Van fretada, Avião",
+                        type: "text"
+                    }
+                ]
+            },
+            {
+                id: "food",
+                title: "O evento ofereceu alimentação?",
+                icon: "fas fa-utensils",
+                text: "O evento ofereceu alimentação?",
+                type: "options",
+                category: "food",
+                options: [
+                    "SIM",
+                    "NÃO"
+                ],
+                conditional: {
+                    field: "food_details",
+                    showWhen: "SIM",
+                    type: "multiple_conditional",
+                    label: "Detalhes sobre alimentação",
+                    inputs: [
+                        {
+                            field: "meals_count",
+                            label: "Quantas refeições foram servidas aproximadamente?",
+                            placeholder: "Ex: 500",
+                            type: "number"
+                        },
+                        {
+                            field: "food_type",
+                            label: "Qual a predominância?",
+                            type: "options",
+                            options: [
+                                "CARNES VERMELHAS",
+                                "AVES/PEIXES",
+                                "VEGETARIANAS",
+                                "VEGANAS"
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                id: "drinks",
+                title: "Houve venda de bebidas, estimar volume de consumo em litros/unidades?",
+                icon: "fas fa-glass-martini",
+                text: "Houve venda de bebidas, estimar volume de consumo em litros/unidades?",
+                type: "multiple_inputs",
+                category: "food",
+                inputs: [
+                    {
+                        field: "drinks_liters",
+                        label: "Volume em litros:",
+                        placeholder: "Ex: 150",
+                        type: "number"
+                    },
+                    {
+                        field: "drinks_units",
+                        label: "Volume em unidades:",
+                        placeholder: "Ex: 300",
+                        type: "number"
+                    }
+                ]
+            },
+            {
+                id: "sustainable_food",
+                title: "Houve incentivo a alimentos locais ou sustentáveis?",
+                icon: "fas fa-leaf",
+                text: "Houve incentivo a alimentos locais ou sustentáveis?",
+                type: "options",
+                category: "food",
+                options: [
+                    "SIM",
+                    "NÃO"
+                ]
+            },
+            {
+                id: "waste",
+                title: "Houve coleta seletiva no evento?",
+                icon: "fas fa-recycle",
+                text: "Houve coleta seletiva no evento?",
+                type: "options",
+                category: "waste",
+                options: [
+                    "SIM",
+                    "NÃO"
+                ]
+            },
+            {
+                id: "waste_quantity",
+                title: "Qual a estimativa da quantidade de resíduos gerados?",
+                icon: "fas fa-trash",
+                text: "Qual a estimativa da quantidade de resíduos gerados?",
+                type: "input",
+                category: "waste",
+                placeholder: "Ex: 50 kg ou 20 sacos de lixo"
+            },
+            {
+                id: "utensils",
+                title: "Houve uso de copos/utensílios descartáveis ou reutilizáveis?",
+                icon: "fas fa-coffee",
+                text: "Houve uso de copos/utensílios descartáveis ou reutilizáveis?",
+                type: "options",
+                category: "waste",
+                options: [
+                    "SIM",
+                    "NÃO"
+                ]
+            },
+            {
+                id: "materials_disposal",
+                title: "Materiais de cenografia, estandes e brindes → foram reutilizados ou descartados?",
+                icon: "fas fa-palette",
+                text: "Materiais de cenografia, estandes e brindes → foram reutilizados ou descartados?",
+                type: "options",
+                category: "waste",
+                options: [
+                    "REUTILIZADOS",
+                    "DESCARTADOS"
+                ]
+            },
+            {
+                id: "materials",
+                title: "Foram impressos materiais de divulgação (folders, banners, panfletos)?",
+                icon: "fas fa-print",
+                text: "Foram impressos materiais de divulgação (folders, banners, panfletos)?",
+                type: "options",
+                category: "infrastructure",
+                options: [
+                    "SIM",
+                    "NÃO"
+                ],
+                conditional: {
+                    field: "materials_details",
+                    showWhen: "SIM",
+                    type: "multiple_inputs",
+                    label: "Quantos e em qual tipo de papel?",
+                    inputs: [
+                        {
+                            field: "materials_quantity",
+                            label: "Quantidade:",
+                            placeholder: "Ex: 1000",
+                            type: "number"
+                        },
+                        {
+                            field: "paper_type",
+                            label: "Tipo de papel:",
+                            placeholder: "Ex: Papel reciclado, Offset, Couché",
+                            type: "text"
+                        }
+                    ]
+                }
+            },
+            {
+                id: "digital_materials",
+                title: "Houve uso de materiais digitais em substituição ao impresso?",
+                icon: "fas fa-laptop",
+                text: "Houve uso de materiais digitais em substituição ao impresso?",
+                type: "options",
+                category: "infrastructure",
+                options: [
+                    "SIM",
+                    "NÃO"
+                ]
+            },
+            {
+                id: "equipment",
+                title: "Estruturas de palco, iluminação e som → eram próprias ou alugadas?",
+                icon: "fas fa-microphone",
+                text: "Estruturas de palco, iluminação e som → eram próprias ou alugadas?",
+                type: "options",
+                category: "infrastructure",
+                options: [
+                    "PRÓPRIAS",
+                    "ALUGADAS"
+                ]
+            },
+            {
+                id: "compensation",
+                title: "Houve compensação de emissões (compra de créditos de carbono, reflorestamento, etc.)?",
+                icon: "fas fa-tree",
+                text: "Houve compensação de emissões (compra de créditos de carbono, reflorestamento, etc.)?",
+                type: "options",
+                category: "infrastructure",
+                options: [
+                    "SIM",
+                    "NÃO"
+                ]
+            }
+        ];
+
+        // Adicionar resposta do bot
+        function addBotResponse(userMessage) {
+            if (userMessage === 'Inventário') {
+                startInventory();
+                return;
+            }
+
+            const responses = {
+                'Quero compensar créditos': 'Perfeito! 🌱 Vou te ajudar com a compensação de créditos de carbono. Primeiro, preciso saber algumas informações sobre você e suas necessidades.',
+                'Como funciona?': 'Ótima pergunta! 💡 Os créditos de carbono são uma forma de compensar suas emissões de CO₂. Cada crédito representa 1 tonelada de CO₂ que foi removida ou evitada da atmosfera.',
+                'Resgatar minha compra': 'iniciarResgate',
+                'Consultar meu histórico': 'consultarHistorico',
+                'default': 'Entendi! 🤔 Vou te ajudar com isso. Para personalizar melhor minha assistência, me conte mais sobre o que você precisa.'
+            };
+
+            const response = responses[userMessage] || responses['default'];
+            
+            if (response === 'consultarHistorico') {
+                consultarHistorico();
+            } else if (response === 'iniciarResgate') {
+                iniciarResgate();
+            } else {
+                addMessage(response, 'bot');
+            }
+        }
+
+        // Consultar histórico de compras
+        function consultarHistorico() {
+            // Obter a chave de acesso da URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const accessKey = urlParams.get('key') || 'Chave não encontrada';
+            
+            // Primeira mensagem
+            addMessage(`Pode deixar comigo! Vou realizar a consulta no histórico de compras realizadas sob a chave: <strong>${accessKey}</strong>`, 'bot');
+            
+            // Segunda mensagem após 1 segundo
+            setTimeout(() => {
+                addMessage('Só mais um minuto enquanto consulto minha base de dados...', 'bot');
+                
+                // Terceira mensagem e grid após 2 segundos
+                setTimeout(() => {
+                    addMessage('Pronto, segue abaixo seu histórico de compras na Plataforma OneClick...', 'bot');
+                    
+                    // Grid com compras fictícias
+                    const historyGridHTML = `
+                        <div class="history-grid">
+                            <div class="history-header">
+                                <h3 class="history-title">📊 Histórico de Compras</h3>
+                                <span class="history-count">3 compras</span>
+                            </div>
+                            <table class="history-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID da Compra</th>
+                                        <th>Data</th>
+                                        <th>Produto/Serviço</th>
+                                        <th>Valor</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="purchase-id">#OC-2024-001</td>
+                                        <td class="purchase-date">15/01/2024</td>
+                                        <td>Inventário de Emissões GEE - Evento Corporativo</td>
+                                        <td class="purchase-amount">R$ 500,00</td>
+                                        <td><span class="purchase-status status-completed">Concluído</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="purchase-id">#OC-2024-002</td>
+                                        <td class="purchase-date">22/01/2024</td>
+                                        <td>Compensação de 150 Créditos de Carbono</td>
+                                        <td class="purchase-amount">R$ 1.200,00</td>
+                                        <td><span class="purchase-status status-completed">Concluído</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="purchase-id">#OC-2024-003</td>
+                                        <td class="purchase-date">28/01/2024</td>
+                                        <td>Inventário de Emissões GEE - Festival de Música</td>
+                                        <td class="purchase-amount">R$ 750,00</td>
+                                        <td><span class="purchase-status status-processing">Processando</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+                    
+                    addMessage(historyGridHTML, 'bot');
+                }, 2000);
+            }, 1000);
+        }
+
+        // Iniciar processo de resgate
+        function iniciarResgate() {
+            // Primeira mensagem
+            addMessage('Claro, vou te auxiliar a realizar o resgate da sua compra...', 'bot');
+            
+            // Segunda mensagem após 1 segundo
+            setTimeout(() => {
+                addMessage('Informe o ID ou a Data da Compra para me ajudar a identificar no meu Banco de Dados...', 'bot');
+                
+                // Formulário para ID/Data
+                const redemptionFormHTML = `
+                    <div class="redemption-form">
+                        <input type="text" class="redemption-input" id="purchaseIdentifier" placeholder="Ex: #OC-2024-001 ou 15/01/2024" onkeypress="handleRedemptionKeypress(event)">
+                        <button class="redemption-btn" onclick="processarIdentificacao()">Buscar Compra</button>
+                    </div>
+                `;
+                
+                addMessage(redemptionFormHTML, 'bot');
+            }, 1000);
+        }
+
+        // Processar identificação da compra
+        function processarIdentificacao() {
+            const identifier = document.getElementById('purchaseIdentifier').value.trim();
+            
+            if (!identifier) {
+                alert('Por favor, informe o ID ou a data da compra.');
+                return;
+            }
+            
+            // Mensagem de identificação
+            addMessage('Já estou identificando a compra, para que eu possa enviar seu Inventário e Certificado me informe seu melhor email?', 'bot');
+            
+            // Formulário para email
+            const emailFormHTML = `
+                <div class="redemption-form">
+                    <input type="email" class="redemption-input" id="userEmail" placeholder="seu@email.com" onkeypress="handleEmailKeypress(event)">
+                    <button class="redemption-btn" onclick="finalizarResgate()">Enviar Resgate</button>
+                </div>
+            `;
+            
+            addMessage(emailFormHTML, 'bot');
+        }
+
+        // Finalizar resgate
+        function finalizarResgate() {
+            const email = document.getElementById('userEmail').value.trim();
+            
+            if (!email) {
+                alert('Por favor, informe seu email.');
+                return;
+            }
+            
+            // Validação básica de email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                alert('Por favor, informe um email válido.');
+                return;
+            }
+            
+            // Mensagem final
+            addMessage('Perfeito! Logo mais você irá receber o seu resgate da Compra!', 'bot');
+        }
+
+        // Lidar com Enter no campo de identificação
+        function handleRedemptionKeypress(event) {
+            if (event.key === 'Enter') {
+                processarIdentificacao();
+            }
+        }
+
+        // Lidar com Enter no campo de email
+        function handleEmailKeypress(event) {
+            if (event.key === 'Enter') {
+                finalizarResgate();
+            }
+        }
+
+        // Sair do OneClick
+        function exitOneClick() {
+            if (confirm('Tem certeza que deseja sair do OneClick?')) {
+                window.location.href = 'inicio.html';
+            }
+        }
+
+        // Iniciar inventário
+        function startInventory() {
+            const welcomeMessage = `
+                Muito bem, a partir de agora vou fazer algumas perguntas para você responder com o objetivo de entender e mensurar sua pegada de carbono, ao final dessa jornada irei te disponibilizar um inventário completo! Vamos juntos?
+                <div class="inventory-buttons">
+                    <button class="inventory-btn yes" onclick="startInventoryQuestions()">SIM</button>
+                    <button class="inventory-btn no" onclick="cancelInventory()">NÃO</button>
+                </div>
+            `;
+            
+            addMessage(welcomeMessage, 'bot');
+        }
+
+        // Cancelar inventário
+        function cancelInventory() {
+            addMessage('Uma pena! Estou aqui disponível para quando você precisar, OK!?', 'bot');
+        }
+
+        // Iniciar perguntas do inventário
+        function startInventoryQuestions() {
+            isInInventoryMode = true;
+            currentQuestionIndex = 0;
+            inventoryData = {};
+            showCurrentQuestion();
+        }
+
+        // Mostrar pergunta atual
+        function showCurrentQuestion() {
+            if (currentQuestionIndex >= inventoryQuestions.length) {
+                completeInventory();
+                return;
+            }
+
+            const question = inventoryQuestions[currentQuestionIndex];
+            const progress = ((currentQuestionIndex + 1) / inventoryQuestions.length) * 100;
+            
+            // Determinar a tag baseada na categoria da pergunta
+            let tagText = "O QUE É O EVENTO";
+            let tagClass = "";
+            let tagIcon = "fas fa-info-circle";
+            
+            if (question.category === "energy") {
+                tagText = "ENERGIA E CONSUMO DE RECURSOS";
+                tagClass = "energy";
+                tagIcon = "fas fa-bolt";
+            } else if (question.category === "transport") {
+                tagText = "TRANSPORTE E MOBILIDADE";
+                tagClass = "transport";
+                tagIcon = "fas fa-car";
+            } else if (question.category === "food") {
+                tagText = "ALIMENTAÇÃO E BEBIDAS";
+                tagClass = "food";
+                tagIcon = "fas fa-utensils";
+            } else if (question.category === "waste") {
+                tagText = "RESÍDUOS E MATERIAIS";
+                tagClass = "waste";
+                tagIcon = "fas fa-recycle";
+            } else if (question.category === "infrastructure") {
+                tagText = "INFRAESTRUTURA E COMUNICAÇÃO";
+                tagClass = "infrastructure";
+                tagIcon = "fas fa-print";
+            }
+            
+            let questionHTML = `
+                <div class="question-container">
+                    <div class="facilitator-tag ${tagClass}">
+                        <i class="${tagIcon}"></i>
+                        ${tagText}
+                    </div>
+                    <div class="progress-info">
+                        Pergunta ${currentQuestionIndex + 1} de ${inventoryQuestions.length}
+                    </div>
+                    <div class="question-title">
+                        <i class="${question.icon}"></i>
+                        ${question.title}
+                    </div>
+                    <div class="question-text">${question.text}</div>
+            `;
+
+            if (question.type === "input") {
+                // Determinar o tipo de input baseado no ID da pergunta
+                const inputType = question.id === "event_area" || question.id === "estimated_audience" ? "number" : "text";
+                const minValue = question.id === "event_area" || question.id === "estimated_audience" ? "min='1'" : "";
+                
+                questionHTML += `
+                    <input type="${inputType}" class="question-input" id="questionInput_${currentQuestionIndex}" placeholder="${question.placeholder}" ${minValue} onkeypress="handleInputKeypress(event)" oninput="handleInputChange()">
+                `;
+            } else if (question.type === "multiple_inputs") {
+                questionHTML += `
+                    <div class="form-group">
+                `;
+                question.inputs.forEach((input, index) => {
+                    const minValue = input.type === "number" ? "min='1'" : "";
+                    questionHTML += `
+                        <div class="multiple-input-group">
+                            <label class="input-label">${input.label}</label>
+                            <input type="${input.type}" class="question-input" id="${input.field}" placeholder="${input.placeholder}" ${minValue} oninput="handleMultipleInputs()">
+                        </div>
+                    `;
+                });
+                questionHTML += `
+                    </div>
+                `;
+            } else if (question.type === "date_duration") {
+                questionHTML += `
+                    <div class="date-duration-container">
+                        <div class="date-field">
+                            <label class="field-label">${question.dateLabel}</label>
+                            <input type="date" class="date-input" id="eventDate" onchange="handleDateDurationChange()">
+                        </div>
+                        <div class="duration-field">
+                            <label class="field-label">${question.durationLabel}</label>
+                            <div class="duration-input-group">
+                                <input type="number" class="duration-number" id="durationNumber" placeholder="Ex: 3" min="1" onchange="handleDateDurationChange()">
+                                <select class="duration-select" id="durationUnit" onchange="handleDateDurationChange()">
+                                    <option value="">Selecione</option>
+                `;
+                question.durationOptions.forEach(option => {
+                    questionHTML += `<option value="${option}">${option}</option>`;
+                });
+                questionHTML += `
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (question.type === "options") {
+                questionHTML += `<div class="question-options">`;
+                question.options.forEach((option, index) => {
+                    questionHTML += `
+                        <div class="question-option" onclick="selectOption(${index})" data-value="${option}" data-index="${index}">
+                            ${option}
+                        </div>
+                    `;
+                });
+                questionHTML += `</div>`;
+                
+                // Campo condicional
+                if (question.conditional) {
+                    if (question.conditional.type === "checkbox") {
+                        questionHTML += `
+                            <div class="conditional-field" id="conditional_${question.conditional.field}">
+                                <label class="field-label">${question.conditional.label}</label>
+                                <div class="checkbox-group">
+                        `;
+                        question.conditional.options.forEach((option, index) => {
+                            questionHTML += `
+                                <div class="checkbox-option">
+                                    <input type="checkbox" id="${question.conditional.field}_${index}" name="${question.conditional.field}" value="${option}" onchange="handleConditionalCheckbox()">
+                                    <label for="${question.conditional.field}_${index}">${option}</label>
+                                </div>
+                            `;
+                        });
+                        questionHTML += `
+                                </div>
+                            </div>
+                        `;
+                    } else if (question.conditional.type === "multiple_inputs") {
+                        questionHTML += `
+                            <div class="conditional-field" id="conditional_${question.conditional.field}">
+                                <label class="field-label">${question.conditional.label}</label>
+                        `;
+                        question.conditional.inputs.forEach((input, index) => {
+                            const minValue = input.type === "number" ? "min='1'" : "";
+                            questionHTML += `
+                                <div class="multiple-input-group">
+                                    <label class="input-label">${input.label}</label>
+                                    <input type="${input.type}" class="question-input" id="${input.field}" placeholder="${input.placeholder}" ${minValue} oninput="handleMultipleInputs()">
+                                </div>
+                            `;
+                        });
+                        questionHTML += `
+                            </div>
+                        `;
+                    } else if (question.conditional.type === "multiple_conditional") {
+                        questionHTML += `
+                            <div class="conditional-field" id="conditional_${question.conditional.field}">
+                                <label class="field-label">${question.conditional.label}</label>
+                        `;
+                        question.conditional.inputs.forEach((input, index) => {
+                            if (input.type === "number") {
+                                const minValue = "min='1'";
+                                questionHTML += `
+                                    <div class="multiple-input-group">
+                                        <label class="input-label">${input.label}</label>
+                                        <input type="${input.type}" class="question-input" id="${input.field}" placeholder="${input.placeholder}" ${minValue} oninput="handleMultipleConditionalInputs()">
+                                    </div>
+                                `;
+                            } else if (input.type === "options") {
+                                questionHTML += `
+                                    <div class="multiple-input-group">
+                                        <label class="input-label">${input.label}</label>
+                                        <div class="question-options">
+                                `;
+                                input.options.forEach((option, optionIndex) => {
+                                    questionHTML += `
+                                        <div class="question-option" onclick="selectConditionalOption('${input.field}', ${optionIndex})">
+                                            ${option}
+                                        </div>
+                                    `;
+                                });
+                                questionHTML += `
+                                        </div>
+                                    </div>
+                                `;
+                            }
+                        });
+                        questionHTML += `
+                            </div>
+                        `;
+                    } else {
+                        const inputType = (question.conditional.field === "fuel_consumption" || question.conditional.field === "distance_km") ? "number" : "text";
+                        const minValue = (question.conditional.field === "fuel_consumption" || question.conditional.field === "distance_km") ? "min='1'" : "";
+                        
+                        questionHTML += `
+                            <div class="conditional-field" id="conditional_${question.conditional.field}">
+                                <label class="field-label">${question.conditional.label}</label>
+                                <input type="${inputType}" class="question-input" id="${question.conditional.field}" placeholder="${question.conditional.placeholder}" ${minValue} oninput="handleConditionalInput()">
+                            </div>
+                        `;
+                    }
+                }
+            }
+
+            // Verificar se é a última pergunta para mostrar botão Finalizar
+            const isLastQuestion = currentQuestionIndex === inventoryQuestions.length - 1;
+            const nextButtonText = isLastQuestion ? 'Finalizar' : 'Próximo';
+            const nextButtonIcon = isLastQuestion ? 'fas fa-check' : 'fas fa-arrow-right';
+            const nextButtonFunction = isLastQuestion ? 'finishInventory()' : 'nextQuestion()';
+            
+            questionHTML += `
+                <div class="question-navigation">
+                    <button class="nav-btn secondary" onclick="previousQuestion()" id="prevBtn_${currentQuestionIndex}" ${currentQuestionIndex === 0 ? 'disabled' : ''}>
+                        <i class="fas fa-arrow-left"></i> Anterior
+                    </button>
+                    <button class="nav-btn primary" onclick="${nextButtonFunction}" id="nextBtn_${currentQuestionIndex}" disabled>
+                        ${nextButtonText} <i class="${nextButtonIcon}"></i>
+                    </button>
+                </div>
+            </div>
+            `;
+
+            addMessage(questionHTML, 'bot');
+            
+            // Aguardar um pouco para garantir que o DOM foi atualizado
+            setTimeout(() => {
+                // Verificar se já existe uma resposta salva para esta pergunta
+                if (inventoryData[question.id]) {
+                    const nextBtn = document.getElementById(`nextBtn_${currentQuestionIndex}`);
+                    const prevBtn = document.getElementById(`prevBtn_${currentQuestionIndex}`);
+                    
+                    if (nextBtn) {
+                        nextBtn.disabled = false;
+                    }
+                    if (prevBtn && currentQuestionIndex > 0) {
+                        prevBtn.disabled = false;
+                    }
+                }
+            }, 100);
+        }
+
+        // Selecionar opção
+        function selectOption(index) {
+            console.log('selectOption chamada com index:', index);
+            
+            // Remover seleção anterior
+            document.querySelectorAll('.question-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Selecionar nova opção
+            const selectedOption = document.querySelectorAll('.question-option')[index];
+            selectedOption.classList.add('selected');
+            
+            // Salvar resposta
+            const question = inventoryQuestions[currentQuestionIndex];
+            inventoryData[question.id] = question.options[index];
+            
+            console.log('Dados salvos:', inventoryData);
+            
+            // Lidar com campos condicionais
+            if (question.conditional) {
+                const conditionalField = document.getElementById(`conditional_${question.conditional.field}`);
+                if (question.options[index] === question.conditional.showWhen) {
+                    conditionalField.classList.add('show');
+                    // Se for checkbox, desabilitar botão próximo até selecionar
+                    if (question.conditional.type === "checkbox") {
+                        const nextBtn = document.getElementById(`nextBtn_${currentQuestionIndex}`);
+                        if (nextBtn) {
+                            nextBtn.disabled = true;
+                            nextBtn.style.opacity = '0.5';
+                        }
+                    }
+                } else {
+                    conditionalField.classList.remove('show');
+                    // Limpar dados do campo condicional se não for relevante
+                    delete inventoryData[question.conditional.field];
+                }
+            }
+            
+            // Habilitar botões imediatamente (exceto se for checkbox condicional)
+            if (!question.conditional || question.conditional.type !== "checkbox" || question.options[index] !== question.conditional.showWhen) {
+                enableNavigationButtons();
+            }
+        }
+
+        // Função para habilitar botões de navegação
+        function enableNavigationButtons() {
+            const nextBtn = document.getElementById(`nextBtn_${currentQuestionIndex}`);
+            const prevBtn = document.getElementById(`prevBtn_${currentQuestionIndex}`);
+            
+            console.log('enableNavigationButtons - Botões encontrados:', { nextBtn, prevBtn });
+            console.log('currentQuestionIndex:', currentQuestionIndex);
+            
+            if (nextBtn) {
+                nextBtn.disabled = false;
+                nextBtn.style.opacity = '1';
+                nextBtn.style.cursor = 'pointer';
+                console.log('Botão Próximo habilitado');
+            }
+            if (prevBtn && currentQuestionIndex > 0) {
+                prevBtn.disabled = false;
+                prevBtn.style.opacity = '1';
+                prevBtn.style.cursor = 'pointer';
+                console.log('Botão Anterior habilitado');
+            }
+        }
+
+        // Lidar com mudanças no input
+        function handleInputChange() {
+            const input = document.getElementById(`questionInput_${currentQuestionIndex}`);
+            
+            if (input && input.value.trim()) {
+                // Salvar dados
+                const question = inventoryQuestions[currentQuestionIndex];
+                inventoryData[question.id] = input.value.trim();
+                
+                // Habilitar botões
+                enableNavigationButtons();
+            } else {
+                // Desabilitar botão próximo se campo estiver vazio
+                const nextBtn = document.getElementById(`nextBtn_${currentQuestionIndex}`);
+                if (nextBtn) {
+                    nextBtn.disabled = true;
+                    nextBtn.style.opacity = '0.5';
+                }
+            }
+        }
+
+        // Lidar com mudanças nos campos de data e duração
+        function handleDateDurationChange() {
+            const dateInput = document.getElementById('eventDate');
+            const durationNumber = document.getElementById('durationNumber');
+            const durationUnit = document.getElementById('durationUnit');
+            
+            if (dateInput && durationNumber && durationUnit) {
+                const hasDate = dateInput.value.trim() !== '';
+                const hasDuration = durationNumber.value.trim() !== '' && durationUnit.value !== '';
+                
+                if (hasDate && hasDuration) {
+                    // Salvar dados
+                    const question = inventoryQuestions[currentQuestionIndex];
+                    inventoryData[question.id] = {
+                        date: dateInput.value,
+                        duration: {
+                            number: durationNumber.value,
+                            unit: durationUnit.value
+                        }
+                    };
+                    
+                    // Habilitar botões
+                    enableNavigationButtons();
+                } else {
+                    // Desabilitar botão próximo se campos estiverem vazios
+                    const nextBtn = document.getElementById(`nextBtn_${currentQuestionIndex}`);
+                    if (nextBtn) {
+                        nextBtn.disabled = true;
+                        nextBtn.style.opacity = '0.5';
+                    }
+                }
+            }
+        }
+
+        // Lidar com tecla Enter no input
+        function handleInputKeypress(event) {
+            if (event.key === 'Enter') {
+                const input = event.target;
+                if (input.value.trim()) {
+                    // Salvar dados antes de avançar
+                    const question = inventoryQuestions[currentQuestionIndex];
+                    inventoryData[question.id] = input.value.trim();
+                    nextQuestion();
+                }
+            }
+        }
+
+        // Mostrar mensagem de transição
+        function showTransitionMessage() {
+            const transitionHTML = `
+                <div class="transition-message">
+                    <div class="transition-text">
+                        Ótimo até aqui! Agora preciso entender melhor sobre o consumo de energia e recursos, vamos lá!?
+                    </div>
+                    <div class="transition-buttons">
+                        <button class="transition-btn save" onclick="saveCurrentAnswers()">SALVAR RESPOSTAS</button>
+                        <button class="transition-btn next" onclick="goToEnergyQuestions()">VAMOS PARA O PRÓXIMO</button>
+                    </div>
+                </div>
+            `;
+            
+            addMessage(transitionHTML, 'bot');
+        }
+
+        // Mostrar mensagem de transição para transporte
+        function showTransportTransitionMessage() {
+            const transitionHTML = `
+                <div class="transition-message">
+                    <div class="transition-text">
+                        Estamos evoluindo bem! Agora preciso entender melhor sobre questões de transporte e mobilidade, bora!?
+                    </div>
+                    <div class="transition-buttons">
+                        <button class="transition-btn save" onclick="saveCurrentAnswers()">SALVAR RESPOSTAS</button>
+                        <button class="transition-btn next" onclick="goToTransportQuestions()">VAMOS PARA O PRÓXIMO</button>
+                    </div>
+                </div>
+            `;
+            
+            addMessage(transitionHTML, 'bot');
+        }
+
+        // Mostrar mensagem de transição para alimentação
+        function showFoodTransitionMessage() {
+            const transitionHTML = `
+                <div class="transition-message">
+                    <div class="transition-text">
+                        Perfeito até aqui! Para tanto, preciso entender melhor sobre questões de alimentação e bebidas, vamos!?
+                    </div>
+                    <div class="transition-buttons">
+                        <button class="transition-btn save" onclick="saveCurrentAnswers()">SALVAR RESPOSTAS</button>
+                        <button class="transition-btn next" onclick="goToFoodQuestions()">VAMOS PARA O PRÓXIMO</button>
+                    </div>
+                </div>
+            `;
+            
+            addMessage(transitionHTML, 'bot');
+        }
+
+        // Mostrar mensagem de transição para resíduos
+        function showWasteTransitionMessage() {
+            const transitionHTML = `
+                <div class="transition-message">
+                    <div class="transition-text">
+                        Ótimo! Estamos perto do fim, mas antes, precisamos saber sobre resíduos e materiais, vamos!?
+                    </div>
+                    <div class="transition-buttons">
+                        <button class="transition-btn save" onclick="saveCurrentAnswers()">SALVAR RESPOSTAS</button>
+                        <button class="transition-btn next" onclick="goToWasteQuestions()">VAMOS PARA O PRÓXIMO</button>
+                    </div>
+                </div>
+            `;
+            
+            addMessage(transitionHTML, 'bot');
+        }
+
+        // Mostrar mensagem de transição para infraestrutura
+        function showInfrastructureTransitionMessage() {
+            const transitionHTML = `
+                <div class="transition-message">
+                    <div class="transition-text">
+                        Chegamos na última parte! Vamos entender sobre infraestrutura e comunicação e partimos para o fim, vamos!?
+                    </div>
+                    <div class="transition-buttons">
+                        <button class="transition-btn save" onclick="saveCurrentAnswers()">SALVAR RESPOSTAS</button>
+                        <button class="transition-btn next" onclick="goToInfrastructureQuestions()">VAMOS PARA O PRÓXIMO</button>
+                    </div>
+                </div>
+            `;
+            
+            addMessage(transitionHTML, 'bot');
+        }
+
+        // Salvar respostas atuais
+        function saveCurrentAnswers() {
+            addMessage('Respostas salvas com sucesso! ✅ Você pode continuar quando quiser.', 'bot');
+        }
+
+        // Ir para perguntas de infraestrutura
+        function goToInfrastructureQuestions() {
+            currentQuestionIndex = 21; // Primeira pergunta de infraestrutura (materials)
+            showCurrentQuestion();
+        }
+
+        // Ir para perguntas de energia
+        function goToEnergyQuestions() {
+            currentQuestionIndex++;
+            showCurrentQuestion();
+        }
+
+        // Ir para perguntas de transporte
+        function goToTransportQuestions() {
+            currentQuestionIndex++;
+            showCurrentQuestion();
+        }
+
+        // Ir para perguntas de alimentação
+        function goToFoodQuestions() {
+            currentQuestionIndex++;
+            showCurrentQuestion();
+        }
+
+        // Ir para perguntas de resíduos
+        function goToWasteQuestions() {
+            currentQuestionIndex++;
+            showCurrentQuestion();
+        }
+
+        // Lidar com campos condicionais
+        function handleConditionalInput() {
+            const question = inventoryQuestions[currentQuestionIndex];
+            if (question && question.conditional) {
+                const conditionalInput = document.getElementById(question.conditional.field);
+                if (conditionalInput && conditionalInput.value.trim()) {
+                    inventoryData[question.conditional.field] = conditionalInput.value.trim();
+                    enableNavigationButtons();
+                } else {
+                    // Desabilitar botão próximo se campo condicional estiver vazio
+                    const nextBtn = document.getElementById(`nextBtn_${currentQuestionIndex}`);
+                    if (nextBtn) {
+                        nextBtn.disabled = true;
+                        nextBtn.style.opacity = '0.5';
+                    }
+                }
+            }
+        }
+
+        // Lidar com checkboxes condicionais
+        function handleConditionalCheckbox() {
+            const question = inventoryQuestions[currentQuestionIndex];
+            if (question && question.conditional && question.conditional.type === "checkbox") {
+                const checkboxes = document.querySelectorAll(`input[name="${question.conditional.field}"]:checked`);
+                const selectedValues = Array.from(checkboxes).map(cb => cb.value);
+                
+                if (selectedValues.length > 0) {
+                    inventoryData[question.conditional.field] = selectedValues;
+                    enableNavigationButtons();
+                } else {
+                    // Desabilitar botão próximo se nenhum checkbox estiver selecionado
+                    const nextBtn = document.getElementById(`nextBtn_${currentQuestionIndex}`);
+                    if (nextBtn) {
+                        nextBtn.disabled = true;
+                        nextBtn.style.opacity = '0.5';
+                    }
+                }
+            }
+        }
+
+        // Lidar com múltiplos inputs condicionais
+        function handleMultipleInputs() {
+            const question = inventoryQuestions[currentQuestionIndex];
+            
+            // Se for pergunta direta com múltiplos inputs
+            if (question && question.type === "multiple_inputs") {
+                let allFilled = true;
+                const data = {};
+                
+                question.inputs.forEach(input => {
+                    const inputElement = document.getElementById(input.field);
+                    if (inputElement && inputElement.value.trim()) {
+                        data[input.field] = inputElement.value.trim();
+                    } else {
+                        allFilled = false;
+                    }
+                });
+                
+                if (allFilled) {
+                    inventoryData[question.id] = data;
+                    enableNavigationButtons();
+                } else {
+                    // Desabilitar botão próximo se algum campo estiver vazio
+                    const nextBtn = document.getElementById(`nextBtn_${currentQuestionIndex}`);
+                    if (nextBtn) {
+                        nextBtn.disabled = true;
+                        nextBtn.style.opacity = '0.5';
+                    }
+                }
+            }
+            // Se for campo condicional com múltiplos inputs
+            else if (question && question.conditional && question.conditional.type === "multiple_inputs") {
+                let allFilled = true;
+                const data = {};
+                
+                question.conditional.inputs.forEach(input => {
+                    const inputElement = document.getElementById(input.field);
+                    if (inputElement && inputElement.value.trim()) {
+                        data[input.field] = inputElement.value.trim();
+                    } else {
+                        allFilled = false;
+                    }
+                });
+                
+                if (allFilled) {
+                    inventoryData[question.conditional.field] = data;
+                    enableNavigationButtons();
+                } else {
+                    // Desabilitar botão próximo se algum campo estiver vazio
+                    const nextBtn = document.getElementById(`nextBtn_${currentQuestionIndex}`);
+                    if (nextBtn) {
+                        nextBtn.disabled = true;
+                        nextBtn.style.opacity = '0.5';
+                    }
+                }
+            }
+        }
+
+        // Lidar com múltiplos inputs condicionais mistos
+        function handleMultipleConditionalInputs() {
+            const question = inventoryQuestions[currentQuestionIndex];
+            if (question && question.conditional && question.conditional.type === "multiple_conditional") {
+                let allFilled = true;
+                const data = {};
+                
+                question.conditional.inputs.forEach(input => {
+                    if (input.type === "number") {
+                        const inputElement = document.getElementById(input.field);
+                        if (inputElement && inputElement.value.trim()) {
+                            data[input.field] = inputElement.value.trim();
+                        } else {
+                            allFilled = false;
+                        }
+                    } else if (input.type === "options") {
+                        if (inventoryData[input.field]) {
+                            data[input.field] = inventoryData[input.field];
+                        } else {
+                            allFilled = false;
+                        }
+                    }
+                });
+                
+                if (allFilled) {
+                    inventoryData[question.conditional.field] = data;
+                    enableNavigationButtons();
+                } else {
+                    // Desabilitar botão próximo se algum campo estiver vazio
+                    const nextBtn = document.getElementById(`nextBtn_${currentQuestionIndex}`);
+                    if (nextBtn) {
+                        nextBtn.disabled = true;
+                        nextBtn.style.opacity = '0.5';
+                    }
+                }
+            }
+        }
+
+        // Selecionar opção em campo condicional
+        function selectConditionalOption(field, index) {
+            const question = inventoryQuestions[currentQuestionIndex];
+            if (question && question.conditional && question.conditional.type === "multiple_conditional") {
+                const input = question.conditional.inputs.find(i => i.field === field);
+                if (input && input.type === "options") {
+                    // Remover seleção anterior
+                    document.querySelectorAll(`#conditional_${question.conditional.field} .question-option`).forEach(option => {
+                        option.classList.remove('selected');
+                    });
+                    
+                    // Selecionar nova opção
+                    const selectedOption = document.querySelectorAll(`#conditional_${question.conditional.field} .question-option`)[index];
+                    selectedOption.classList.add('selected');
+                    
+                    // Salvar resposta
+                    inventoryData[field] = input.options[index];
+                    
+                    // Verificar se todos os campos estão preenchidos
+                    handleMultipleConditionalInputs();
+                }
+            }
+        }
+
+        // Finalizar inventário
+        function finishInventory() {
+            const question = inventoryQuestions[currentQuestionIndex];
+            console.log('finishInventory chamada para:', question.id);
+            console.log('Dados finais:', inventoryData);
+            
+            // Salvar resposta da última pergunta
+            if (question.type === "options") {
+                const selectedOption = document.querySelector('.question-option.selected');
+                if (selectedOption) {
+                    const optionIndex = Array.from(document.querySelectorAll('.question-option')).indexOf(selectedOption);
+                    inventoryData[question.id] = question.options[optionIndex];
+                } else {
+                    alert('Por favor, selecione uma opção antes de finalizar.');
+                    return;
+                }
+            }
+            
+            // Mostrar modal de progresso
+            showProgressModal();
+        }
+
+        // Mostrar modal de progresso
+        function showProgressModal() {
+            const modalHTML = `
+                <div class="progress-modal" id="progressModal">
+                    <div class="progress-content">
+                        <div class="progress-title">Processando seu Inventário</div>
+                        
+                        <div class="progress-message" id="message1">Aguarde enquanto estamos gerando seu Inventário de Emissões GEE...</div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" id="progressBar1">
+                                <div class="progress-percentage" id="percentage1">0%</div>
+                            </div>
+                        </div>
+                        
+                        <div class="progress-message" id="message2" style="display: none;">Aguarde enquanto estamos com base no seu Inventário de Emissões GEE, calculando a estimativa de compensação de Créditos de Carbono...</div>
+                        <div class="progress-bar-container" id="progressBar2Container" style="display: none;">
+                            <div class="progress-bar" id="progressBar2">
+                                <div class="progress-percentage" id="percentage2">0%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            
+            // Iniciar animação das progress bars
+            startProgressAnimation();
+        }
+
+        // Iniciar animação das progress bars
+        function startProgressAnimation() {
+            // Primeira progress bar (0-10 segundos)
+            animateProgressBar('progressBar1', 'percentage1', 10000, () => {
+                // Mostrar segunda progress bar
+                document.getElementById('message2').style.display = 'block';
+                document.getElementById('progressBar2Container').style.display = 'block';
+                
+                // Segunda progress bar (0-10 segundos)
+                animateProgressBar('progressBar2', 'percentage2', 10000, () => {
+                    // Finalizar processo
+                    setTimeout(() => {
+                        document.getElementById('progressModal').remove();
+                        showFinalResults();
+                    }, 1000);
+                });
+            });
+        }
+
+        // Animar progress bar
+        function animateProgressBar(barId, percentageId, duration, callback) {
+            const progressBar = document.getElementById(barId);
+            const percentage = document.getElementById(percentageId);
+            const startTime = Date.now();
+            
+            function updateProgress() {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min((elapsed / duration) * 100, 100);
+                
+                progressBar.style.width = progress + '%';
+                percentage.textContent = Math.round(progress) + '%';
+                
+                if (progress < 100) {
+                    requestAnimationFrame(updateProgress);
+                } else {
+                    if (callback) callback();
+                }
+            }
+            
+            requestAnimationFrame(updateProgress);
+        }
+
+        // Mostrar resultados finais
+        function showFinalResults() {
+            const resultsHTML = `
+                <div class="message bot">
+                    <div class="message-content">
+                        <div style="text-align: center; padding: 20px;">
+                            <h2 style="color: #2ECC71; margin-bottom: 20px;">🎉 Inventário Concluído e Créditos Calculados!</h2>
+                            <p style="font-size: 16px; margin-bottom: 15px;">Seu inventário de emissões de GEE foi gerado com sucesso!</p>
+                            <p style="font-size: 16px; margin-bottom: 20px;">A estimativa de compensação de Créditos de Carbono foi calculada e sua compensação é de: <span class="price-highlight">500 Créditos de Carbono!</span></p>
+                            
+                            <div class="credits-info">
+                                <p style="margin: 0; font-size: 18px;">🌱 500 Créditos de Carbono Calculados</p>
+                            </div>
+                            
+                            <div style="margin: 25px 0;">
+                                <div class="final-checkbox">
+                                    <input type="checkbox" id="buyInventory" onchange="handleInventoryPurchase()">
+                                    <label for="buyInventory">Deseja comprar seu Inventário de Emissões de GEE completo por apenas <span class="price-highlight">R$500,00</span>?</label>
+                                </div>
+                                
+                                <div class="final-checkbox">
+                                    <input type="checkbox" id="compensateCredits" onchange="handleCreditsCompensation()">
+                                    <label for="compensateCredits">Deseja compensar os Créditos calculados?</label>
+                                </div>
+                            </div>
+                            
+                            <div class="final-buttons">
+                                <button class="final-btn finish" onclick="returnToHome()">FINALIZAR</button>
+                                <button class="final-btn submit" onclick="showSubmissionModal()">SUBMETER</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            addMessage(resultsHTML, 'bot');
+        }
+
+        // Lidar com compra do inventário
+        function handleInventoryPurchase() {
+            const checkbox = document.getElementById('buyInventory');
+            if (checkbox.checked) {
+                console.log('Usuário deseja comprar o inventário por R$500,00');
+                // Aqui você pode adicionar lógica para processar a compra
+            }
+        }
+
+        // Lidar com compensação de créditos
+        function handleCreditsCompensation() {
+            const checkbox = document.getElementById('compensateCredits');
+            if (checkbox.checked) {
+                console.log('Usuário deseja compensar os créditos calculados');
+                // Aqui você pode adicionar lógica para processar a compensação
+            }
+        }
+
+        // Retornar à página inicial
+        function returnToHome() {
+            // Limpar dados do inventário
+            inventoryData = {};
+            currentQuestionIndex = 0;
+            isInInventoryMode = false;
+            
+            // Limpar mensagens do chat
+            const chatMessages = document.querySelector('.chat-messages');
+            chatMessages.innerHTML = '';
+            
+            // Mostrar mensagem de boas-vindas
+            addMessage('Olá! Sou o OneClick, sua plataforma de inventários e compensação de créditos segura, fácil e prática! 🌱', 'bot');
+            addMessage('Como posso ajudá-lo hoje?', 'bot');
+            
+            // Verificar se há chave de acesso na URL e exibir
+            const urlParams = new URLSearchParams(window.location.search);
+            const accessKey = urlParams.get('key');
+            
+            if (accessKey) {
+                const accessKeyHTML = `
+                    <div class="access-key-label">
+                        CHAVE DE ACESSO: <span class="key-value">${accessKey}</span>
+                    </div>
+                `;
+                addMessage(accessKeyHTML, 'bot');
+            }
+            
+            // Mostrar botões de ação rápida
+            const quickActionsHTML = `
+                <div class="quick-actions">
+                    <button class="quick-action-btn" onclick="addBotResponse('Como funciona?')">
+                        <i class="fas fa-question-circle"></i>
+                        Como Funciona?
+                    </button>
+                    <button class="quick-action-btn" onclick="startInventory()">
+                        <i class="fas fa-clipboard-list"></i>
+                        Faça seu Inventário
+                    </button>
+                    <button class="quick-action-btn" onclick="addBotResponse('Quero compensar créditos')">
+                        <i class="fas fa-shopping-cart"></i>
+                        Compense seus Créditos
+                    </button>
+                    <button class="quick-action-btn" onclick="addBotResponse('Resgatar minha compra')">
+                        <i class="fas fa-gift"></i>
+                        Resgatar minha Compra
+                    </button>
+                    <button class="quick-action-btn" onclick="addBotResponse('Consultar meu histórico')">
+                        <i class="fas fa-history"></i>
+                        Consultar meu Histórico
+                    </button>
+                    <button class="quick-action-btn" onclick="exitOneClick()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Sair do OneClick
+                    </button>
+                </div>
+            `;
+            addMessage(quickActionsHTML, 'bot');
+        }
+
+        // Mostrar modal de submissão
+        function showSubmissionModal() {
+            const modalHTML = `
+                <div class="submission-modal" id="submissionModal">
+                    <div class="submission-content">
+                        <div class="submission-title">Obrigado por escolher a FUTURE CLIMATE GROUP!</div>
+                        
+                        <div class="submission-message">
+                            Em até 2 horas do horário comercial, o Staff da Future Climate irá entrar em contato com você para finalizar as suas transações!
+                        </div>
+                        
+                        <div class="contact-form">
+                            <input type="tel" class="contact-input" id="contactPhone" placeholder="Telefone/WhatsApp" required>
+                            <input type="text" class="contact-input" id="contactName" placeholder="Nome de Contato" required>
+                        </div>
+                        
+                        <button class="conclude-btn" onclick="concludeSubmission()">CONCLUIR</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+        }
+
+        // Concluir submissão
+        function concludeSubmission() {
+            const phone = document.getElementById('contactPhone').value.trim();
+            const name = document.getElementById('contactName').value.trim();
+            
+            if (!phone || !name) {
+                alert('Por favor, preencha todos os campos antes de concluir.');
+                return;
+            }
+            
+            // Aqui você pode adicionar lógica para salvar os dados de contato
+            console.log('Dados de contato:', { phone, name });
+            
+            // Remover modal
+            document.getElementById('submissionModal').remove();
+            
+            // Retornar à página inicial
+            returnToHome();
+        }
+
+        // Próxima pergunta
+        function nextQuestion() {
+            const question = inventoryQuestions[currentQuestionIndex];
+            console.log('nextQuestion chamada para:', question.id);
+            console.log('Dados atuais:', inventoryData);
+            
+            // Salvar resposta se for input
+            if (question.type === "input") {
+                const input = document.getElementById(`questionInput_${currentQuestionIndex}`);
+                if (input && input.value.trim()) {
+                    inventoryData[question.id] = input.value.trim();
+                } else {
+                    alert('Por favor, preencha o campo antes de continuar.');
+                    return;
+                }
+            } else if (question.type === "multiple_inputs") {
+                let allFilled = true;
+                const data = {};
+                
+                question.inputs.forEach(input => {
+                    const inputElement = document.getElementById(input.field);
+                    if (inputElement && inputElement.value.trim()) {
+                        data[input.field] = inputElement.value.trim();
+                    } else {
+                        allFilled = false;
+                    }
+                });
+                
+                if (allFilled) {
+                    inventoryData[question.id] = data;
+                } else {
+                    alert('Por favor, preencha todos os campos antes de continuar.');
+                    return;
+                }
+            }
+            
+            // Verificar se há resposta salva para campos de data/duração
+            if (question.type === "date_duration") {
+                const dateInput = document.getElementById('eventDate');
+                const durationNumber = document.getElementById('durationNumber');
+                const durationUnit = document.getElementById('durationUnit');
+                
+                if (!dateInput.value || !durationNumber.value || !durationUnit.value) {
+                    alert('Por favor, preencha todos os campos antes de continuar.');
+                    return;
+                }
+            }
+            
+            // Verificar se há resposta salva
+            if (!inventoryData[question.id]) {
+                alert('Por favor, selecione uma opção antes de continuar.');
+                return;
+            }
+            
+            // Verificar campos condicionais se necessário
+            if (question.conditional && inventoryData[question.id] === question.conditional.showWhen) {
+                if (question.conditional.type === "checkbox") {
+                    if (!inventoryData[question.conditional.field] || inventoryData[question.conditional.field].length === 0) {
+                        alert('Por favor, selecione pelo menos uma opção antes de continuar.');
+                        return;
+                    }
+                } else if (question.conditional.type === "multiple_inputs") {
+                    if (!inventoryData[question.conditional.field]) {
+                        alert('Por favor, preencha todos os campos antes de continuar.');
+                        return;
+                    }
+                } else if (question.conditional.type === "multiple_conditional") {
+                    if (!inventoryData[question.conditional.field]) {
+                        alert('Por favor, preencha todos os campos antes de continuar.');
+                        return;
+                    }
+                } else {
+                    if (!inventoryData[question.conditional.field]) {
+                        alert('Por favor, preencha o campo condicional antes de continuar.');
+                        return;
+                    }
+                }
+            }
+            
+            // Verificar se é a última pergunta da seção de evento
+            if (currentQuestionIndex === 5) { // Última pergunta sobre evento
+                showTransitionMessage();
+                return;
+            }
+            
+            // Verificar se é a última pergunta da seção de energia
+            if (currentQuestionIndex === 8) { // Última pergunta sobre energia (renewable_energy)
+                showTransportTransitionMessage();
+                return;
+            }
+            
+            // Verificar se é a última pergunta da seção de transporte
+            if (currentQuestionIndex === 13) { // Última pergunta sobre transporte (staff_transport)
+                showFoodTransitionMessage();
+                return;
+            }
+            
+            // Verificar se é a última pergunta da seção de alimentação
+            if (currentQuestionIndex === 16) { // Última pergunta sobre alimentação (sustainable_food)
+                showWasteTransitionMessage();
+                return;
+            }
+            
+            // Verificar se é a última pergunta da seção de resíduos
+            if (currentQuestionIndex === 20) { // Última pergunta sobre resíduos (materials_disposal)
+                showInfrastructureTransitionMessage();
+                return;
+            }
+            
+            console.log('Avançando para próxima pergunta');
+            currentQuestionIndex++;
+            showCurrentQuestion();
+        }
+
+        // Pergunta anterior
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                showCurrentQuestion();
+            }
+        }
+
+        // Completar inventário
+        function completeInventory() {
+            addMessage('Parabéns! 🎉 Você completou o inventário de carbono do seu evento. Agora vou processar essas informações e calcular suas emissões.', 'bot');
+            
+            setTimeout(() => {
+                addMessage('📊 Com base nas informações fornecidas, aqui está um resumo do seu inventário:', 'bot');
+                
+                // Mostrar resumo dos dados coletados
+                let summary = 'Dados coletados com sucesso! Em breve você receberá um relatório detalhado com suas emissões de carbono e recomendações para compensação.';
+                addMessage(summary, 'bot');
+                
+                isInInventoryMode = false;
+            }, 2000);
+        }
+
+        // Mostrar indicador de digitação
+        function showTypingIndicator() {
+            typingIndicator.style.display = 'block';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Esconder indicador de digitação
+        function hideTypingIndicator() {
+            typingIndicator.style.display = 'none';
+        }
+
+        // Enviar mensagem com Enter
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Focar no input quando a página carregar
+        window.addEventListener('load', function() {
+            messageInput.focus();
+        });
+
+        // Animações suaves ao carregar
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.querySelector('.chat-container');
+            container.style.opacity = '0';
+            container.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                container.style.transition = 'all 0.6s ease';
+                container.style.opacity = '1';
+                container.style.transform = 'translateY(0)';
+            }, 100);
+
+            // Verificar se há chave de acesso na URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const accessKey = urlParams.get('key');
+            
+            if (accessKey) {
+                const accessKeyLabel = document.getElementById('accessKeyLabel');
+                const keyValue = document.getElementById('keyValue');
+                
+                if (accessKeyLabel && keyValue) {
+                    keyValue.textContent = accessKey;
+                    accessKeyLabel.style.display = 'block';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
