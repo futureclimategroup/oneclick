@@ -1790,7 +1790,7 @@
 
             const responses = {
                 'Quero compensar créditos': 'Perfeito! 🌱 Vou te ajudar com a compensação de créditos de carbono. Primeiro, preciso saber algumas informações sobre você e suas necessidades.',
-                'Como funciona?': 'Ótima pergunta! 💡 Os créditos de carbono são uma forma de compensar suas emissões de CO₂. Cada crédito representa 1 tonelada de CO₂ que foi removida ou evitada da atmosfera.',
+                'Como funciona?': 'explicarFuncionamento',
                 'Resgatar minha compra': 'iniciarResgate',
                 'Consultar meu histórico': 'consultarHistorico',
                 'default': 'Entendi! 🤔 Vou te ajudar com isso. Para personalizar melhor minha assistência, me conte mais sobre o que você precisa.'
@@ -1802,6 +1802,8 @@
                 consultarHistorico();
             } else if (response === 'iniciarResgate') {
                 iniciarResgate();
+            } else if (response === 'explicarFuncionamento') {
+                explicarFuncionamento();
             } else {
                 addMessage(response, 'bot');
             }
@@ -1870,6 +1872,32 @@
                     
                     addMessage(historyGridHTML, 'bot');
                 }, 2000);
+            }, 1000);
+        }
+
+        // Explicar funcionamento da plataforma
+        function explicarFuncionamento() {
+            // Primeira mensagem
+            addMessage('Ótima pergunta! A OneClick é a Plataforma de Inventários e Compensação de Créditos da Future Climate Group focada na jornada de Eventos gerais...', 'bot');
+            
+            // Segunda mensagem após 1 segundo
+            setTimeout(() => {
+                addMessage('Aqui na plataforma, você vai respondendo um questionário intuitivo e ágil sobre características diversas do seu evento sobre algumas categorias.', 'bot');
+                
+                // Terceira mensagem após 2 segundos
+                setTimeout(() => {
+                    addMessage('Após a conclusão dessas respostas, a plataforma automaticamente irá gerar seu inventário de emissões de GEE completo que você pode fazer a compra do mesmo por apenas R$500,00!', 'bot');
+                    
+                    // Quarta mensagem após 3 segundos
+                    setTimeout(() => {
+                        addMessage('Além disso, na mesma conversa, você ainda pode fazer a compensação das suas emissões realizando a compra de créditos de forma também muito intuitiva e simples.', 'bot');
+                        
+                        // Quinta mensagem após 4 segundos
+                        setTimeout(() => {
+                            addMessage('Posso lhe ajudar em mais algo?', 'bot');
+                        }, 1000);
+                    }, 1000);
+                }, 1000);
             }, 1000);
         }
 
